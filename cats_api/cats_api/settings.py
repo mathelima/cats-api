@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'cats',
     'django_filters',
     'rest_framework',
+    'drf_yasg2',
 ]
 
 MIDDLEWARE = [
@@ -52,7 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'request_logging.middleware.LoggingMiddleware'
+    'request_logging.middleware.LoggingMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 # Logging
