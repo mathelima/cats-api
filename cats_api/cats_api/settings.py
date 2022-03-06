@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import logging
 from pathlib import Path
+from prettyconf import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -50,7 +52,44 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'request_logging.middleware.LoggingMiddleware'
 ]
+
+# Logging
+REQUEST_LOGGING_HTTP_4XX_LOG_LEVEL = logging.WARNING
+REQUEST_LOGGING_ENABLE_COLORIZE = config("LOG_COLORIZE", default=False, cast=config.boolean)
+LOG_LEVEL = config("LOG_LEVEL", default="INFO")
+LOG_FORMAT = config("LOG_FORMAT", default="console")
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "json": {
+            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+            "format": "%(levelname)s %(name)s %(module)s %(message)s %(asctime)s",
+        },
+        "simple": {
+            "format": "[{levelname}] name:{name} module:{module} message:{message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {"level": "INFO", "class": "logging.StreamHandler", "formatter": "simple"},
+        "console_json": {"level": "INFO", "class": "logging.StreamHandler", "formatter": "json"},
+    },
+    "root": {
+        "handlers": [LOG_FORMAT],
+        "level": LOG_LEVEL,
+    },
+    "loggers": {
+        "django": {
+            "handlers": [LOG_FORMAT],
+            "level": LOG_LEVEL,
+            "propagate": False,
+        },
+    },
+}
+
 
 ROOT_URLCONF = 'cats_api.urls'
 
