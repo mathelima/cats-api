@@ -17,7 +17,7 @@ SECRET_KEY = 'django-insecure-io5suwnlq_ye%q^_&w(ur==yj=d#$4jab@((sbz46^92-mbh(y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['cats-api', 'localhost']
 
 
 # Application definition
@@ -54,7 +54,7 @@ MIDDLEWARE = [
 REQUEST_LOGGING_HTTP_4XX_LOG_LEVEL = logging.WARNING
 REQUEST_LOGGING_ENABLE_COLORIZE = config("LOG_COLORIZE", default=False, cast=config.boolean)
 LOG_LEVEL = config("LOG_LEVEL", default="INFO")
-LOG_FORMAT = config("LOG_FORMAT", default="console")
+LOG_FORMAT = config("LOG_FORMAT", default="logger")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -71,6 +71,7 @@ LOGGING = {
     "handlers": {
         "console": {"level": "INFO", "class": "logging.StreamHandler", "formatter": "simple"},
         "console_json": {"level": "INFO", "class": "logging.StreamHandler", "formatter": "json"},
+        'logger': {'level': 'INFO', 'class': 'logging.handlers.RotatingFileHandler', 'filename': './logs/test.log', 'formatter': 'simple'},
     },
     "root": {
         "handlers": [LOG_FORMAT],
@@ -157,8 +158,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
