@@ -1,8 +1,9 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django_prometheus.models import ExportModelOperationsMixin
 
 
-class Breeds(models.Model):
+class Breeds(ExportModelOperationsMixin("breeds"), models.Model):
     description = models.CharField(max_length=1023, blank=True)
     id = models.CharField(primary_key=True, max_length=255)
     images = ArrayField(models.CharField(max_length=255, blank=True))
@@ -14,7 +15,7 @@ class Breeds(models.Model):
         return self.name
 
 
-class Categories(models.Model):
+class Categories(ExportModelOperationsMixin("categories"), models.Model):
     id = models.IntegerField(primary_key=True)
     images = ArrayField(models.CharField(max_length=255, blank=True))
     name = models.CharField(max_length=255, blank=True)

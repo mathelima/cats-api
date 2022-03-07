@@ -1,0 +1,98 @@
+version: '3.9'
+
+services:
+
+  postgresdb:
+    image: postgres:latest
+    container_name: postgresdb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mynetwork
+    ports:
+      - "5432:5432"
+
+  cats-api:
+    image: matheuslima/cats-api
+    container_name: cats-api
+    environment:
+      DB_HOST: postgresdb
+    networks:
+      - mynetwork
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgresdb
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+    container_name: elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      discovery.type: single-node
+    networks:
+      - mynetwork
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.8.0
+    container_name: kibana
+    ports:
+      - 5601:5601
+    networks:
+      - mynetwork
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.8.0
+    container_name: filebeat
+    command: filebeat -e -strict.perms=false
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./logs:/usr/share/filebeat/logs
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    networks:
+      - mynetwork
+    links:
+      - kibana
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    networks:
+      - mynetwork
+    ports:
+      - "3000:3000"
+    #volumes:
+      #- grafana_data:/var/lib/grafana
+      #- ./grafana/provisioning/:/etc/grafana/provisioning/
+    #restart: always
+
+  prometheus:
+    image: prom/prometheus:v2.14.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      #- prom/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - mynetwork
+    ports:
+      - "9090:9090"
+
+
+networks:
+  mynetwork:
+    driver: bridge
