@@ -1,6 +1,3 @@
-import django
-from django.shortcuts import render
-from django import views
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters
 from .models import Breeds, Categories
