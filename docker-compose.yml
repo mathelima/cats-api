@@ -20,6 +20,8 @@ services:
     container_name: cats-api
     environment:
       DB_HOST: postgresdb
+    volumes:
+      - ./logs:/app/logs
     networks:
       - mynetwork
     ports:
@@ -74,17 +76,12 @@ services:
       - mynetwork
     ports:
       - "3000:3000"
-    #volumes:
-      #- grafana_data:/var/lib/grafana
-      #- ./grafana/provisioning/:/etc/grafana/provisioning/
-    #restart: always
 
   prometheus:
     image: prom/prometheus:v2.14.0
     container_name: prometheus
     volumes:
       - ./prometheus/:/etc/prometheus/
-      #- prom/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     networks:
