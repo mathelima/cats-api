@@ -144,12 +144,18 @@ Elastic search, Filebeat and Kibana are used to provide online logging.
 
 Kibana can be accessed throw http://localhost:5601/ and can be configured to see the logging from cats-api.
 
-If you prefer to see on the container, it is necessary to change the LOG_FORMAT on settings.py to console as default.
+To configure Kibana, you need to navigate to discover → index patterns → create index pattern and then:
+
+![image](https://user-images.githubusercontent.com/32756259/158718762-7264f84b-7ddf-408b-82e8-647d4f7e3065.png)
+![image](https://user-images.githubusercontent.com/32756259/158718791-5520bbaf-839a-4b8e-b0eb-e4f59d8ab7dc.png)
+
+Now everything is done and you can see logs on menu → observability → logs
 
 Exemple of logging on Kibana querying INFO logs:
 
 ![logs](https://user-images.githubusercontent.com/32756259/157148131-15bfe5ce-7d51-4c98-86b5-8ecc24a8cdb1.png)
 
+If you prefer to see on the container, it is necessary to change the LOG_FORMAT on settings.py to console as default.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
